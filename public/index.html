@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+</head>
+<body>
+    <form action="http://localhost:3000/save" method="POST">
+        <br><br><label for="name">Name :</label>
+        <input type="text" name="name" id="name" required><br><br>
+        <label for="email">Email :</label>
+        <input type="text" name="email" id="email" required><br><br>
+        <label for="password">Password :</label>
+        <input type="password" name="password" id="password" required><br><br>
+        <label for="role">Role :</label>
+        <select name="role" id="role" required>
+            <option value="consumer-student">Student</option>
+            <option value="admin">enterpranuer</option>
+            <option value="wholesaler">Wholesale</option>
+            <option value="retailer">Retailer</option>
+        </select><br><br>
+        <button type="submit">submit</button>
+    </form>
+    <a href="login.html">LogIn</a>
+    
+</body>
+</html>
