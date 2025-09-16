@@ -7,6 +7,31 @@
 <body>
   <h1>Dashboard of Wholesaler</h1>
 
+<button id="logoutBtn">Logout</button>
+
+<script>
+  console.log("Script loaded ✅");
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  try {
+    const res = await fetch("http://localhost:3000/auth/logout", {
+      method: "POST",
+      credentials: "include"   // ✅ correct place
+    });
+
+       const data = await res.json();
+    console.log("Logout response:", data); 
+
+    if (res.ok) {
+      localStorage.removeItem("token"); // optional if you keep token in storage
+      window.location.href = "/login.html"; // ✅ redirect works now
+    } else {
+      console.error("Logout failed");
+    }
+  } catch (err) {
+    console.error("Error during logout:", err);
+  }
+});
+</script>
 
 
 </body>

@@ -2,34 +2,42 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import signIn from "./routes/signIn.js"
-import logIn from "./routes/logIn.js"
-import dashboard from "./routes/dashboard.js";
+import authRoutes from "./routes/auth.js";
+import dashboardRoutes from "./routes/dashboard.js";
+import bodyParser from "body-parser";
+import postRoutes from "./routes/post.js";
+import path from "path";
 
-dotenv.config({ path: './.env' });
+dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
 
-app.use(express.urlencoded({extended:true}));
-app.use(express.json());
+// Middleware
+app.use(express.urlencoded({ extended: true ,limit:"10mb"}));
+app.use(express.json({limit:"10mb"}));
 app.use(cookieParser());
-app.use(express.static('public'));
+app.use(express.static("public"));
 
-app.use('/save',signIn);
-app.use('/login',logIn);
-app.use("/dashboard", dashboard);
+// Routes
+app.use("/auth", authRoutes);
+app.use("/dashboard", dashboardRoutes);
+app.use(bodyParser.json()); // so req.body works
+app.use("/api/posts", postRoutes); // mount posts API
+app.use("/uploads", express.static("uploads"));
 
-const conn = mongoose.connect(process.env.MONGO_URI)
-.then(()=>{console.log('Connection is done');})
-.catch((error)=>{console.log(error);});
-
-
-app.get('/',(req,res)=>{
-    res.sendFile('./public/index.html',{root:__dirname});
+// Serve home page
+app.get("/", (req, res) => {
+  res.sendFile(path.resolve("public/index.html"));
 });
 
-app.listen(port,()=>{
-    console.log(`Listen to port ${port}`);
-    
+// DB connection
+mongoose
+  .connect(process.env.MONGO_URI, { dbName: "test" })
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.error("❌ DB Connection Error:", err));
+
+// Start server
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`🚀 Server running at http://localhost:${port}`);
 });

@@ -5,8 +5,71 @@
   <title>Dashboard</title>
 </head>
 <body>
-  <h1>Dashboard of Student</h1>
+  <h1>Dashboard of Buyer</h1>
+<button id="postBtn">POST</button><br>
+<div id="content"></div>
+<button id="logoutBtn">Logout</button>
 
+<script>
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  try {
+    const res = await fetch("http://localhost:3000/auth/logout", {
+      method: "POST",
+      credentials: "include"   // ✅ correct place
+    });
+
+       const data = await res.json();
+    console.log("Logout response:", data); 
+
+    if (res.ok) {
+      localStorage.removeItem("token"); // optional if you keep token in storage
+      window.location.href = "/login.html"; // ✅ redirect works now
+    } else {
+      console.error("Logout failed");
+    }
+  } catch (err) {
+    console.error("Error during logout:", err);
+  }
+});
+
+document.getElementById("postBtn").addEventListener("click", () => {
+  document.getElementById("content").innerHTML = `
+  <br><br>
+    <form id="postForm">
+      <input type="text" name="title" placeholder="Enter company name" required><br><br>
+      <input type="text" name="name" placeholder="Enter name" required><br><br>
+<label>Upload Design:</label>
+<input type="file" name="design" accept="image/*" required><br><br>
+
+<label>Upload Business Card:</label>
+<input type="file" name="businessCard" accept="image/*" required><br><br>
+      <button type="submit">Submit</button>
+    </form>
+      <br><br>
+  `;
+  document.getElementById("postForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch("http://localhost:3000/api/posts", {
+        method: "POST",
+         body: formData, 
+        credentials:"include"
+      });
+
+      const result = await res.json();
+      console.log("Server response:", result);
+      alert("Post submitted successfully!");
+    } catch (err) {
+      console.error("Error submitting post:", err);
+    }
+  });
+
+});
+</script>
 
 
 </body>

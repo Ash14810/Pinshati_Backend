@@ -7,14 +7,14 @@
 </head>
 <body>
   <form id="loginForm">
-    <input type="text" name="email" id="email" placeholder="Username(email)" required />
-    <input type="password" name="password" id="password" placeholder="Password" required />
+    <input type="text" name="email" id="email" placeholder="Username(email)" required /><br><br>
+    <input type="password" name="password" id="password" placeholder="Password" required /><br><br>
     <select name="role" id="role" required>
-      <option value="consumer-student">Student</option>
-      <option value="admin">Enterpranuer</option>
+      <option value="buyer">Buyer</option>
+      <option value="seller">Seller</option>
       <option value="wholesaler">Wholesale</option>
       <option value="retailer">Retailer</option>
-    </select>
+    </select><br><br>
     <button type="submit">Submit</button>
   </form>
 <script>
@@ -28,7 +28,7 @@ const form = document.getElementById("loginForm");
     const role = document.getElementById("role").value;
 
     try {
-      const res = await fetch("http://localhost:3000/login", {
+      const res = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, role })
