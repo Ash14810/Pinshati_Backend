@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import bodyParser from "body-parser";
 import postRoutes from "./routes/post.js";
+import postSellerRoutes from "./routes/seller/sellerPost.js";
 import path from "path";
 
 dotenv.config();
@@ -21,8 +22,9 @@ app.use(express.static("public"));
 // Routes
 app.use("/auth", authRoutes);
 app.use("/dashboard", dashboardRoutes);
-app.use(bodyParser.json()); // so req.body works
-app.use("/api/posts", postRoutes); // mount posts API
+app.use(bodyParser.json()); 
+app.use("/api/posts", postRoutes); 
+app.use("/api/seller/posts", postSellerRoutes); 
 app.use("/uploads", express.static("uploads"));
 
 // Serve home page

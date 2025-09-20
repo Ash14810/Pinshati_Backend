@@ -37,7 +37,65 @@ router.post("/", verifyToken, upload.fields([
     res.status(500).json({ error: "Failed to create post" });
   }
 });
+// ✅ Get Single Post
+router.get("/:id", verifyToken, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
 
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
 
+    res.status(200).json(post);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch post" });
+  }
+});
+
+// ✅ Get All Posts
+router.get("/", verifyToken, async (req, res) => {
+  try {
+    const posts = await Post.find().sort({ createdAt: -1 }); // newest first
+    res.status(200).json(posts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
+});
+// ✅ Update Post
+router.put("/:id", verifyToken, upload.fields([
+  { name: "design", maxCount: 1 },
+  { name: "businessCard", maxCount: 1 }
+]), async (req, res) => {
+  try {
+    const { title, name } = req.body;
+
+    // Build update object dynamically
+    const updateData = { title, name };
+
+    if (req.files["design"]) {
+      updateData.design = req.files["design"][0].filename;
+    }
+    if (req.files["businessCard"]) {
+      updateData.businessCard = req.files["businessCard"][0].filename;
+    }
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateData },
+      { new: true } // return updated doc
+    );
+
+    if (!updatedPost) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    res.status(200).json({ message: "Post updated successfully", post: updatedPost });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update post" });
+  }
+});
 
 export default router;
